@@ -46,7 +46,7 @@ export const products: Product[] = [
     image: "/blue-cheese-cannabis-buds.jpg",
     seller: {
       name: "Green Valley Growers",
-      whatsapp: "265990770515",
+      whatsapp: "+27738896698",
     },
     featured: true,
   },
@@ -61,7 +61,7 @@ export const products: Product[] = [
     image: "/tropical-cannabis-buds.jpg",
     seller: {
       name: "Sunset Cultivators",
-      whatsapp: "265990770515",
+      whatsapp: "+27738896698",
     },
     featured: true,
   },
@@ -76,7 +76,7 @@ export const products: Product[] = [
     image: "/og-kush-cannabis.png",
     seller: {
       name: "Premium Reserve",
-      whatsapp: "265990770515",
+      whatsapp: "+27738896698",
     },
   },
   {
@@ -90,7 +90,7 @@ export const products: Product[] = [
     image: "/purple-cannabis-strain.jpg",
     seller: {
       name: "Mountain High Farms",
-      whatsapp: "265990770515",
+      whatsapp: "+27738896698",
     },
   },
 
@@ -106,7 +106,7 @@ export const products: Product[] = [
     image: "/cannabis-grinder-aluminum.jpg",
     seller: {
       name: "Accessory Hub",
-      whatsapp: "265990770515",
+      whatsapp: "+27738896698",
     },
     featured: true,
   },
@@ -121,7 +121,7 @@ export const products: Product[] = [
     image: "/glass-water-pipe-bong.png",
     seller: {
       name: "Glass Art Collective",
-      whatsapp: "265990770515",
+      whatsapp: "+27738896698",
     },
   },
   {
@@ -135,7 +135,7 @@ export const products: Product[] = [
     image: "/rolling-papers-pack.jpg",
     seller: {
       name: "Smoke Shop SA",
-      whatsapp: "265990770515",
+      whatsapp: "+27738896698",
     },
   },
   {
@@ -149,7 +149,7 @@ export const products: Product[] = [
     image: "/portable-vaporizer-pen.jpg",
     seller: {
       name: "Vape Nation",
-      whatsapp: "265990770515",
+      whatsapp: "+27738896698",
     },
     featured: true,
   },
@@ -166,7 +166,7 @@ export const products: Product[] = [
     image: "/cannabis-gummy-bears.png",
     seller: {
       name: "Edibles Express",
-      whatsapp: "265990770515",
+      whatsapp: "+27738896698",
     },
   },
   {
@@ -180,7 +180,7 @@ export const products: Product[] = [
     image: "/cannabis-brownies-chocolate.jpg",
     seller: {
       name: "Baked Goods Co",
-      whatsapp: "265990770515",
+      whatsapp: "+27738896698",
     },
   },
   {
@@ -194,7 +194,7 @@ export const products: Product[] = [
     image: "/cannabis-cookies.jpg",
     seller: {
       name: "Cookie Kingdom",
-      whatsapp: "265990770515",
+      whatsapp: "+27738896698",
     },
   },
 
@@ -210,7 +210,7 @@ export const products: Product[] = [
     image: "/cbd-oil-bottle-dropper.jpg",
     seller: {
       name: "Pure Wellness",
-      whatsapp: "265990770515",
+      whatsapp: "+27738896698",
     },
   },
   {
@@ -224,7 +224,7 @@ export const products: Product[] = [
     image: "/cannabis-tincture-bottle.jpg",
     seller: {
       name: "Herbal Remedies",
-      whatsapp: "265990770515",
+      whatsapp: "+27738896698",
     },
   },
 
@@ -240,7 +240,7 @@ export const products: Product[] = [
     image: "/cannabis-seeds.png",
     seller: {
       name: "Seed Bank SA",
-      whatsapp: "265990770515",
+      whatsapp: "+27738896698",
     },
   },
   {
@@ -254,7 +254,7 @@ export const products: Product[] = [
     image: "/cannabis-autoflower-seeds.jpg",
     seller: {
       name: "Auto Genetics",
-      whatsapp: "265990770515",
+      whatsapp: "+27738896698",
     },
   },
 ]
