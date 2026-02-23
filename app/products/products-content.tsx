@@ -1,22 +1,46 @@
 "use client"
 
-import { useState, useMemo } from "react"
+import { useState, useMemo, useEffect } from "react"
 import { Search } from "lucide-react"
 import { ProductCard } from "@/components/product-card"
-import { products, categories } from "@/lib/data"
+import { categories } from "@/lib/data"
 import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
-import type { Category } from "@/lib/types"
+import type { Category, Product } from "@/lib/types"
 
 export default function ProductsContent() {
   const [searchQuery, setSearchQuery] = useState("")
   const [selectedCategory, setSelectedCategory] = useState<Category | "all">("all")
+  const [products, setProducts] = useState<Product[]>([])
+  const [loading, setLoading] = useState(true)
+
+  // 🔹 Fetch products from backend (your database)
+  useEffect(() => {
+    const fetchProducts = async () => {
+      try {
+        const res = await fetch("http://localhost:5000/api/products")
+        const data = await res.json()
+        // Normalize seller object for frontend
+        const normalized = data.map((p: any) => ({
+          ...p,
+          seller: { name: p.seller_name, whatsapp: p.whatsapp },
+        }))
+
+        setProducts(normalized)
+      } catch (err) {
+        console.error("Error fetching products:", err)
+      } finally {
+        setLoading(false)
+      }
+    }
+
+    fetchProducts()
+  }, [])
 
   // Filter products
   const filteredProducts = useMemo(() => {
     let filtered = products
 
-    // Filter by search
     if (searchQuery) {
       filtered = filtered.filter(
         (p) =>
@@ -25,20 +49,28 @@ export default function ProductsContent() {
       )
     }
 
-    // Filter by category
     if (selectedCategory !== "all") {
       filtered = filtered.filter((p) => p.category === selectedCategory)
     }
 
     return filtered
-  }, [searchQuery, selectedCategory])
+  }, [searchQuery, selectedCategory, products])
+
+  if (loading) {
+    return (
+      <div className="pt-16 min-h-screen flex items-center justify-center">
+        <p className="text-muted-foreground">Loading products...</p>
+      </div>
+    )
+  }
 
   return (
     <div className="pt-16 min-h-screen">
       <div className="container mx-auto px-4 py-12">
-        {/* Header */}
         <div className="mb-12 text-center">
-          <h1 className="text-4xl md:text-5xl font-bold font-[family-name:var(--font-poppins)] mb-4">All Products</h1>
+          <h1 className="text-4xl md:text-5xl font-bold font-[family-name:var(--font-poppins)] mb-4">
+            All Products
+          </h1>
           <p className="text-muted-foreground max-w-2xl mx-auto">
             Browse our complete collection of premium cannabis products and accessories
           </p>
@@ -46,7 +78,6 @@ export default function ProductsContent() {
 
         {/* Filters */}
         <div className="mb-8 space-y-4">
-          {/* Search */}
           <div className="relative max-w-md">
             <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
             <Input
@@ -57,7 +88,6 @@ export default function ProductsContent() {
             />
           </div>
 
-          {/* <CHANGE> Removed price sorting, only keeping category filters */}
           <div className="flex flex-wrap gap-2">
             <Button
               variant={selectedCategory === "all" ? "default" : "outline"}
@@ -66,6 +96,7 @@ export default function ProductsContent() {
             >
               All
             </Button>
+
             {categories.map((cat) => (
               <Button
                 key={cat.slug}
@@ -80,12 +111,11 @@ export default function ProductsContent() {
           </div>
         </div>
 
-        {/* Results Count */}
         <p className="text-sm text-muted-foreground mb-6">
-          Showing {filteredProducts.length} {filteredProducts.length === 1 ? "product" : "products"}
+          Showing {filteredProducts.length}{" "}
+          {filteredProducts.length === 1 ? "product" : "products"}
         </p>
 
-        {/* Products Grid */}
         {filteredProducts.length > 0 ? (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {filteredProducts.map((product) => (
@@ -94,7 +124,7 @@ export default function ProductsContent() {
           </div>
         ) : (
           <div className="text-center py-12">
-            <p className="text-muted-foreground">No products found matching your criteria.</p>
+            <p className="text-muted-foreground">No products found.</p>
           </div>
         )}
       </div>

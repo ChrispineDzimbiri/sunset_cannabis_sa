@@ -17,7 +17,7 @@ export function ProductCard({ product }: ProductCardProps) {
           <div className="relative h-64 overflow-hidden bg-muted rounded-lg">
             <Image
               src={product.image || "/placeholder.svg"}
-              alt={product.name}
+              alt={product.name || "Product Image"}
               fill
               className="object-cover transition-transform duration-500 group-hover:scale-110"
             />
@@ -30,18 +30,22 @@ export function ProductCard({ product }: ProductCardProps) {
           <div className="p-6 space-y-3">
             <div className="flex items-start justify-between gap-2">
               <h3 className="font-semibold text-lg text-foreground group-hover:text-primary transition-colors text-pretty">
-                {product.name}
+                {product.name || "Untitled Product"}
               </h3>
               <Badge variant="outline" className="capitalize shrink-0">
-                {product.category}
+                {product.category || "Uncategorized"}
               </Badge>
             </div>
 
-            <p className="text-sm text-muted-foreground line-clamp-2 leading-relaxed">{product.description}</p>
+            <p className="text-sm text-muted-foreground line-clamp-2 leading-relaxed">
+              {product.description || "No description available."}
+            </p>
 
-            {/* <CHANGE> Removed price display, only showing seller name */}
+            {/* Seller */}
             <div className="flex items-center justify-end pt-2">
-              <span className="text-xs text-muted-foreground">by {product.seller.name}</span>
+              <span className="text-xs text-muted-foreground">
+                by {product.seller?.name || "Unknown Seller"}
+              </span>
             </div>
           </div>
         </CardContent>

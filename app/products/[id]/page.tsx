@@ -2,7 +2,6 @@ import { notFound } from "next/navigation"
 import Image from "next/image"
 import Link from "next/link"
 import { MessageCircle, ArrowLeft, Package } from "lucide-react"
-import { getProductById } from "@/lib/data"
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
 import { Card, CardContent } from "@/components/ui/card"
@@ -11,9 +10,19 @@ interface ProductPageProps {
   params: Promise<{ id: string }>
 }
 
+async function getProduct(id: string) {
+  const res = await fetch(`http://localhost:5000/api/products/${id}`, {
+    cache: "no-store",
+  })
+
+  if (!res.ok) return null
+
+  return res.json()
+}
+
 export default async function ProductPage({ params }: ProductPageProps) {
   const { id } = await params
-  const product = getProductById(id)
+  const product = await getProduct(id)
 
   if (!product) {
     notFound()
@@ -22,7 +31,8 @@ export default async function ProductPage({ params }: ProductPageProps) {
   const whatsappMessage = encodeURIComponent(
     `Hi! I'm interested in the ${product.name} listed on Sunset Cannabis. Can you provide more information?`,
   )
-  const whatsappUrl = `https://wa.me/${product.seller.whatsapp}?text=${whatsappMessage}`
+
+  const whatsappUrl = `https://wa.me/${product.whatsapp}?text=${whatsappMessage}`
 
   return (
     <div className="pt-16 min-h-screen">
@@ -46,9 +56,6 @@ export default async function ProductPage({ params }: ProductPageProps) {
                 className="object-cover"
                 priority
               />
-              {product.featured && (
-                <Badge className="absolute top-4 right-4 bg-primary/90 backdrop-blur-sm">Featured</Badge>
-              )}
             </div>
           </div>
 
@@ -61,12 +68,13 @@ export default async function ProductPage({ params }: ProductPageProps) {
               <h1 className="text-4xl font-bold font-[family-name:var(--font-poppins)] mb-4 text-balance">
                 {product.name}
               </h1>
-              {/* <CHANGE> Removed price display */}
             </div>
 
             <div className="space-y-4">
               <h2 className="text-xl font-semibold">Description</h2>
-              <p className="text-muted-foreground leading-relaxed">{product.longDescription}</p>
+              <p className="text-muted-foreground leading-relaxed">
+                {product.longDescription}
+              </p>
             </div>
 
             {/* Seller Info */}
@@ -78,7 +86,9 @@ export default async function ProductPage({ params }: ProductPageProps) {
                   </div>
                   <div>
                     <p className="text-sm text-muted-foreground">Seller</p>
-                    <p className="font-semibold text-lg">{product.seller.name}</p>
+                    <p className="font-semibold text-lg">
+                      {product.seller_name}
+                    </p>
                   </div>
                 </div>
 
@@ -96,8 +106,7 @@ export default async function ProductPage({ params }: ProductPageProps) {
               <CardContent className="p-4">
                 <p className="text-xs text-muted-foreground leading-relaxed">
                   <strong>Important:</strong> All purchases and negotiations happen directly between you and the seller
-                  via WhatsApp. Sunset Cannabis does not process payments or handle transactions. Please verify product
-                  details and arrange payment securely with the seller.
+                  via WhatsApp. Sunset Cannabis does not process payments or handle transactions.
                 </p>
               </CardContent>
             </Card>

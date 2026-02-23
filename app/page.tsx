@@ -1,38 +1,68 @@
+"use client"
+
+import { useEffect, useState } from "react"
 import Link from "next/link"
 import { ArrowRight, ShieldCheck, Users, Sparkles } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { ProductCard } from "@/components/product-card"
 import { CategoryCard } from "@/components/category-card"
-import { getFeaturedProducts, categories } from "@/lib/data"
+import { categories } from "@/lib/data"
+import type { Product } from "@/lib/types"
 
 export default function HomePage() {
-  const featuredProducts = getFeaturedProducts()
+  const [featuredProducts, setFeaturedProducts] = useState<Product[]>([])
+  const [loading, setLoading] = useState(true)
+
+  useEffect(() => {
+    const fetchFeatured = async () => {
+      try {
+        const res = await fetch("http://localhost:5000/api/products") // fetch from your backend
+        const data = await res.json()
+
+        // normalize seller object so product.seller.name works
+        const normalized = data.map((p: any) => ({
+          ...p,
+          seller: { name: p.seller_name, whatsapp: p.whatsapp },
+        }))
+
+        setFeaturedProducts(normalized.slice(0, 6)) // show top 6 featured products
+      } catch (err) {
+        console.error("Error fetching featured products:", err)
+      } finally {
+        setLoading(false)
+      }
+    }
+
+    fetchFeatured()
+  }, [])
+
+  if (loading) {
+    return (
+      <div className="pt-16 min-h-screen flex items-center justify-center">
+        <p className="text-muted-foreground">Loading featured products...</p>
+      </div>
+    )
+  }
 
   return (
     <div className="pt-16">
       {/* Hero Section */}
       <section className="relative min-h-[90vh] flex items-center justify-center overflow-hidden">
-        {/* Background image */}
         <div
           className="absolute inset-0 bg-cover bg-center bg-no-repeat"
-          style={{
-            backgroundImage: `url('/hero-cannabis-landscape.jpg')`,
-          }}
+          style={{ backgroundImage: `url('/hero-cannabis-landscape.jpg')` }}
         />
-        {/* Overlay gradient */}
         <div className="absolute inset-0 bg-gradient-to-b from-background/80 via-background/85 to-background/90" />
         <div className="absolute inset-0 bg-[radial-gradient(circle_at_30%_50%,rgba(34,197,94,0.15),transparent_50%)]" />
         <div className="absolute inset-0 bg-[radial-gradient(circle_at_70%_50%,rgba(34,197,94,0.08),transparent_50%)]" />
 
         <div className="container mx-auto px-4 relative z-10">
           <div className="max-w-4xl mx-auto text-center space-y-8 animate-fade-in">
-            {/* Badge */}
             <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full glass-light border border-primary/20">
               <Sparkles className="h-4 w-4 text-primary" />
               <span className="text-sm text-foreground">Premium Cannabis Marketplace</span>
             </div>
 
-            {/* Heading */}
             <h1 className="text-5xl md:text-7xl font-bold font-[family-name:var(--font-poppins)] text-balance">
               Discover{" "}
               <span className="text-primary bg-clip-text text-transparent bg-gradient-to-r from-primary to-emerald-400">
@@ -41,13 +71,10 @@ export default function HomePage() {
               in South Africa
             </h1>
 
-            {/* Description */}
             <p className="text-xl text-muted-foreground max-w-2xl mx-auto text-pretty leading-relaxed">
-              Connect with trusted sellers offering premium cannabis products, accessories, and more. Your gateway to
-              quality and authenticity.
+              Connect with trusted sellers offering premium cannabis products, accessories, and more. Your gateway to quality and authenticity.
             </p>
 
-            {/* CTA Buttons */}
             <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
               <Button asChild size="lg" className="group">
                 <Link href="/products">
@@ -60,7 +87,6 @@ export default function HomePage() {
               </Button>
             </div>
 
-            {/* Trust Indicators */}
             <div className="flex flex-wrap items-center justify-center gap-8 pt-8">
               <div className="flex items-center gap-2 text-sm text-muted-foreground">
                 <ShieldCheck className="h-5 w-5 text-primary" />
@@ -108,7 +134,7 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* Categories */}
+      {/* Categories Section */}
       <section className="py-20">
         <div className="container mx-auto px-4">
           <div className="text-center mb-12">
@@ -135,8 +161,7 @@ export default function HomePage() {
             <ShieldCheck className="h-12 w-12 text-primary mx-auto" />
             <h3 className="text-2xl font-bold font-[family-name:var(--font-poppins)]">Important Information</h3>
             <p className="text-muted-foreground leading-relaxed">
-              Sunset Cannabis is a product discovery platform. We do not process payments or handle transactions. All
-              purchases and negotiations happen directly between buyers and sellers via WhatsApp. For adults 18+ only.
+              Sunset Cannabis is a product discovery platform. We do not process payments or handle transactions. All purchases and negotiations happen directly between buyers and sellers via WhatsApp. For adults 18+ only.
             </p>
             <Button asChild variant="link">
               <Link href="/terms">Read Our Terms & Disclaimer</Link>
