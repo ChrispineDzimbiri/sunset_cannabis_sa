@@ -1,11 +1,11 @@
-import Link from "next/link"
-import Image from "next/image"
-import type { Product } from "@/lib/types"
-import { Card, CardContent } from "@/components/ui/card"
-import { Badge } from "@/components/ui/badge"
+import Link from "next/link";
+import Image from "next/image";
+import type { Product } from "@/lib/types";
+import { Card, CardContent } from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
 
 interface ProductCardProps {
-  product: Product
+  product: Product & { short_desc: string }; // add short_desc to the type;
 }
 
 export function ProductCard({ product }: ProductCardProps) {
@@ -16,13 +16,18 @@ export function ProductCard({ product }: ProductCardProps) {
           {/* Image */}
           <div className="relative h-64 overflow-hidden bg-muted rounded-lg">
             <Image
-              src={product.image || "/placeholder.svg"}
+              src={
+                `${process.env.NEXT_PUBLIC_SERVER_URL}/${product.image}` ||
+                "/placeholder.svg"
+              }
               alt={product.name || "Product Image"}
               fill
               className="object-cover transition-transform duration-500 group-hover:scale-110"
             />
             {product.featured && (
-              <Badge className="absolute top-4 right-4 bg-primary/90 backdrop-blur-sm">Featured</Badge>
+              <Badge className="absolute top-4 right-4 bg-primary/90 backdrop-blur-sm">
+                Featured
+              </Badge>
             )}
           </div>
 
@@ -38,7 +43,7 @@ export function ProductCard({ product }: ProductCardProps) {
             </div>
 
             <p className="text-sm text-muted-foreground line-clamp-2 leading-relaxed">
-              {product.description || "No description available."}
+              {product.short_desc || "No description available."}
             </p>
 
             {/* Seller */}
@@ -51,5 +56,5 @@ export function ProductCard({ product }: ProductCardProps) {
         </CardContent>
       </Card>
     </Link>
-  )
+  );
 }

@@ -3,6 +3,7 @@ import { pool } from "../db";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 import dotenv from "dotenv";
+import { error } from "console";
 
 dotenv.config();
 
@@ -13,7 +14,10 @@ router.post("/login", async (req, res) => {
 
   try {
     // Get admin from DB
-    const [rows]: any = await pool.query("SELECT * FROM admin WHERE email = ?", [email]);
+    const [rows]: any = await pool.query(
+      "SELECT * FROM admin WHERE email = ?",
+      [email],
+    );
 
     if (rows.length === 0) {
       return res.status(400).json({ message: "Admin not found" });
@@ -29,9 +33,13 @@ router.post("/login", async (req, res) => {
     }
 
     // Create JWT token
-    const token = jwt.sign({ id: admin.id, email: admin.email }, process.env.JWT_SECRET!, {
-      expiresIn: "1d",
-    });
+    const token = jwt.sign(
+      { id: admin.id, email: admin.email },
+      process.env.JWT_SECRET!,
+      {
+        expiresIn: "1d",
+      },
+    );
 
     res.json({ token });
   } catch (err) {
@@ -39,5 +47,7 @@ router.post("/login", async (req, res) => {
     res.status(500).json({ message: "Server error" });
   }
 });
+
+console.log("Auth Tokken", process.env.JWT_SECRET);
 
 export default router;

@@ -1,31 +1,25 @@
-"use client"
+"use client";
 
-import { useEffect, useState } from "react"
-import { useRouter } from "next/navigation"
-import { Product, Category } from "@/lib/types"
-import { Button } from "@/components/ui/button"
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
-import { Input } from "@/components/ui/input"
-import { Textarea } from "@/components/ui/textarea"
-import {
-  Plus,
-  Trash2,
-  Package,
-  ArrowLeft,
-  LogOut,
-} from "lucide-react"
-import Link from "next/link"
-import Image from "next/image"
+import { useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
+import { Product, Category } from "@/lib/types";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
+import { Plus, Trash2, Package, ArrowLeft, LogOut } from "lucide-react";
+import Link from "next/link";
+import Image from "next/image";
 
 export default function AdminDashboard() {
-  const router = useRouter()
+  const router = useRouter();
 
-  const [products, setProducts] = useState<Product[]>([])
-  const [isAdding, setIsAdding] = useState(false)
-  const [loading, setLoading] = useState(false)
+  const [products, setProducts] = useState<Product[]>([]);
+  const [isAdding, setIsAdding] = useState(false);
+  const [loading, setLoading] = useState(false);
 
-  const [selectedFile, setSelectedFile] = useState<File | null>(null)
-  const [imagePreview, setImagePreview] = useState("")
+  const [selectedFile, setSelectedFile] = useState<File | null>(null);
+  const [imagePreview, setImagePreview] = useState("");
 
   const [formData, setFormData] = useState<Partial<Product>>({
     name: "",
@@ -34,58 +28,56 @@ export default function AdminDashboard() {
     description: "",
     longDescription: "",
     seller: { name: "Admin", whatsapp: "" },
-  })
+  });
 
   const token =
-    typeof window !== "undefined"
-      ? localStorage.getItem("adminToken")
-      : null
+    typeof window !== "undefined" ? localStorage.getItem("adminToken") : null;
 
   // -----------------------------------
   // AUTH
   // -----------------------------------
   useEffect(() => {
-    if (!token) router.push("/login")
-  }, [token, router])
+    if (!token) router.push("/login");
+  }, [token, router]);
 
   const handleLogout = () => {
-    localStorage.removeItem("adminToken")
-    router.push("/login")
-  }
+    localStorage.removeItem("adminToken");
+    router.push("/login");
+  };
 
   // -----------------------------------
   // FETCH PRODUCTS
   // -----------------------------------
   const fetchProducts = async () => {
-    const res = await fetch("http://localhost:5000/api/products")
-    const data = await res.json()
-    setProducts(data)
-  }
+    const res = await fetch("http://localhost:5000/api/products");
+    const data = await res.json();
+    setProducts(data);
+  };
 
   useEffect(() => {
-    fetchProducts()
-  }, [])
+    fetchProducts();
+  }, []);
 
   // -----------------------------------
   // IMAGE PICK
   // -----------------------------------
   const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0]
-    if (!file) return
+    const file = e.target.files?.[0];
+    if (!file) return;
 
     if (!file.type.startsWith("image/")) {
-      alert("Please upload an image")
-      return
+      alert("Please upload an image");
+      return;
     }
 
     if (file.size > 5 * 1024 * 1024) {
-      alert("Max image size is 5MB")
-      return
+      alert("Max image size is 5MB");
+      return;
     }
 
-    setSelectedFile(file)
-    setImagePreview(URL.createObjectURL(file))
-  }
+    setSelectedFile(file);
+    setImagePreview(URL.createObjectURL(file));
+  };
 
   const resetForm = () => {
     setFormData({
@@ -95,32 +87,37 @@ export default function AdminDashboard() {
       description: "",
       longDescription: "",
       seller: { name: "Admin", whatsapp: "" },
-    })
-    setSelectedFile(null)
-    setImagePreview("")
-  }
+    });
+    setSelectedFile(null);
+    setImagePreview("");
+  };
 
   // -----------------------------------
   // CREATE PRODUCT
   // -----------------------------------
   const handleSubmit = async () => {
-    if (!token) return
+    if (!token) return;
 
-    setLoading(true)
+    setLoading(true);
 
     try {
-      const form = new FormData()
+      const form = new FormData();
 
-      form.append("name", formData.name || "")
-      form.append("category", formData.category || "")
-      form.append("price", String(formData.price || 0))
-      form.append("description", formData.description || "")
-      form.append("longDescription", formData.longDescription || "")
-      form.append("seller_name", formData.seller?.name || "")
-      form.append("whatsapp", formData.seller?.whatsapp || "")
+      form.append("name", formData.name || "");
+      form.append("category", formData.category || "");
+      form.append("price", String(formData.price || 0));
+      form.append("short_desc", formData.description || "");
+      form.append("long_desc", formData.longDescription || "");
+      form.append("seller_name", formData.seller?.name || "");
+      form.append("whatsapp", formData.seller?.whatsapp || "");
+
+      console.log("FORM DATA TO BE SENT:");
+      form.forEach((value, key) => {
+        console.log(`${key}: ${value}`);
+      });
 
       if (selectedFile) {
-        form.append("image", selectedFile)
+        form.append("image", selectedFile);
       }
 
       await fetch("http://localhost:5000/api/products", {
@@ -129,32 +126,32 @@ export default function AdminDashboard() {
           Authorization: `Bearer ${token}`,
         },
         body: form,
-      })
+      });
 
-      await fetchProducts()
-      setIsAdding(false)
-      resetForm()
+      await fetchProducts();
+      setIsAdding(false);
+      resetForm();
     } catch (err) {
-      console.error(err)
-      alert("Something went wrong")
+      console.error(err);
+      alert("Something went wrong");
     } finally {
-      setLoading(false)
+      setLoading(false);
     }
-  }
+  };
 
   // -----------------------------------
   // DELETE
   // -----------------------------------
   const handleDelete = async (id: string) => {
-    if (!confirm("Delete this product?")) return
+    if (!confirm("Delete this product?")) return;
 
     await fetch(`http://localhost:5000/api/products/${id}`, {
       method: "DELETE",
       headers: { Authorization: `Bearer ${token}` },
-    })
+    });
 
-    fetchProducts()
-  }
+    fetchProducts();
+  };
 
   // -----------------------------------
   // SOLD OUT
@@ -169,10 +166,10 @@ export default function AdminDashboard() {
       body: JSON.stringify({
         status: product.isSoldOut ? "available" : "sold_out",
       }),
-    })
+    });
 
-    fetchProducts()
-  }
+    fetchProducts();
+  };
 
   // -----------------------------------
   // UI
@@ -180,7 +177,6 @@ export default function AdminDashboard() {
   return (
     <div className="min-h-screen pt-24 pb-12 bg-background">
       <div className="container mx-auto px-4">
-
         {/* HEADER */}
         <div className="flex justify-between mb-8">
           <div>
@@ -239,7 +235,11 @@ export default function AdminDashboard() {
                 }
               />
 
-              <input type="file" accept="image/*" onChange={handleImageUpload} />
+              <input
+                type="file"
+                accept="image/*"
+                onChange={handleImageUpload}
+              />
 
               {imagePreview && (
                 <Image
@@ -282,8 +282,7 @@ export default function AdminDashboard() {
             </Card>
           ))}
         </div>
-
       </div>
     </div>
-  )
+  );
 }
