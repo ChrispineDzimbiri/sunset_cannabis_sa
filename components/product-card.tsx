@@ -9,6 +9,7 @@ interface ProductCardProps {
 }
 
 export function ProductCard({ product }: ProductCardProps) {
+  console.log("Rendering ProductCard for:", product);
   return (
     <Link href={`/products/${product.id}`}>
       <Card className="group overflow-hidden hover:shadow-xl hover:shadow-primary/5 transition-all duration-300 border-border/50 hover:border-primary/30 h-full">

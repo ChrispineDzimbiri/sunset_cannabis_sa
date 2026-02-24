@@ -1,38 +1,40 @@
-import { notFound } from "next/navigation"
-import Image from "next/image"
-import Link from "next/link"
-import { MessageCircle, ArrowLeft, Package } from "lucide-react"
-import { Button } from "@/components/ui/button"
-import { Badge } from "@/components/ui/badge"
-import { Card, CardContent } from "@/components/ui/card"
+import { notFound } from "next/navigation";
+import Image from "next/image";
+import Link from "next/link";
+import { MessageCircle, ArrowLeft, Package } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
+import { Card, CardContent } from "@/components/ui/card";
 
 interface ProductPageProps {
-  params: Promise<{ id: string }>
+  params: Promise<{ id: string }>;
 }
 
 async function getProduct(id: string) {
+  console.log("Fetching product with ID:", id);
   const res = await fetch(`http://localhost:5000/api/products/${id}`, {
     cache: "no-store",
-  })
+  });
+  console.log("Fetch response status:", res);
+  if (!res.ok) return null;
 
-  if (!res.ok) return null
-
-  return res.json()
+  return res.json();
 }
 
 export default async function ProductPage({ params }: ProductPageProps) {
-  const { id } = await params
-  const product = await getProduct(id)
+  const { id } = await params;
+  const product = await getProduct(id);
 
   if (!product) {
-    notFound()
+    notFound();
   }
 
   const whatsappMessage = encodeURIComponent(
     `Hi! I'm interested in the ${product.name} listed on Sunset Cannabis. Can you provide more information?`,
-  )
+  );
 
-  const whatsappUrl = `https://wa.me/${product.whatsapp}?text=${whatsappMessage}`
+  const whatsappUrl = `https://wa.me/${product.whatsapp}?text=${whatsappMessage}`;
+  console.log("WhatsApp URL:", whatsappUrl);
 
   return (
     <div className="pt-16 min-h-screen">
@@ -93,7 +95,11 @@ export default async function ProductPage({ params }: ProductPageProps) {
                 </div>
 
                 <Button asChild className="w-full" size="lg">
-                  <a href={whatsappUrl} target="_blank" rel="noopener noreferrer">
+                  <a
+                    href={whatsappUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
                     <MessageCircle className="mr-2 h-5 w-5" />
                     Contact Seller on WhatsApp
                   </a>
@@ -105,8 +111,10 @@ export default async function ProductPage({ params }: ProductPageProps) {
             <Card className="bg-muted/50 border-border/50">
               <CardContent className="p-4">
                 <p className="text-xs text-muted-foreground leading-relaxed">
-                  <strong>Important:</strong> All purchases and negotiations happen directly between you and the seller
-                  via WhatsApp. Sunset Cannabis does not process payments or handle transactions.
+                  <strong>Important:</strong> All purchases and negotiations
+                  happen directly between you and the seller via WhatsApp.
+                  Sunset Cannabis does not process payments or handle
+                  transactions.
                 </p>
               </CardContent>
             </Card>
@@ -114,5 +122,5 @@ export default async function ProductPage({ params }: ProductPageProps) {
         </div>
       </div>
     </div>
-  )
+  );
 }

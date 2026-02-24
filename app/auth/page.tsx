@@ -223,6 +223,16 @@ export default function AdminDashboard() {
                   setFormData({ ...formData, description: e.target.value })
                 }
               />
+              <Input
+                placeholder="Sellers Number with country code (e.g. +123456789)"
+                value={formData.seller?.whatsapp}
+                onChange={(e) =>
+                  setFormData({
+                    ...formData,
+                    seller: { ...formData.seller, whatsapp: e.target.value },
+                  })
+                }
+              />
 
               <Textarea
                 placeholder="Long description"
