@@ -5,7 +5,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 
 interface ProductCardProps {
-  product: Product;
+  product: Product & { short_desc: string }; // add short_desc to the type;
 }
 
 export function ProductCard({ product }: ProductCardProps) {
@@ -43,7 +43,7 @@ export function ProductCard({ product }: ProductCardProps) {
             </div>
 
             <p className="text-sm text-muted-foreground line-clamp-2 leading-relaxed">
-              {product.description || "No description available."}
+              {product.short_desc || "No description available."}
             </p>
 
             {/* Seller */}
